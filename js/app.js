@@ -10,34 +10,41 @@ gsap.timeline({ defaults: { ease: "power3.out", duration: 0.9 } })
   .to(".cta-btn--lg", { opacity: 1, y: 0, duration: 0.7 }, 0.7)
   .to(".hero-note", { opacity: 1, y: 0 }, 0.9);
 
-// ===== Feedback carousel (autoplay) =====
+// ===== Feedback carousel (autoplay, slides one item at a time through all slides) =====
 (function () {
   const track = document.getElementById("carouselTrack");
-  const dotsWrap = document.getElementById("carouselDots");
   const carousel = document.getElementById("carousel");
-  if (!track || !dotsWrap || !carousel) return;
+  if (!track || !carousel) return;
 
-  const count = track.children.length;
+  const slides = Array.from(track.children);
+  const count = slides.length;
   let index = 0;
   let timer;
 
-  for (let i = 0; i < count; i++) {
-    const dot = document.createElement("button");
-    dot.className = "carousel-dot" + (i === 0 ? " active" : "");
-    dot.setAttribute("aria-label", "Ir para o feedback " + (i + 1));
-    dot.addEventListener("click", () => goTo(i));
-    dotsWrap.appendChild(dot);
-  }
-  const dots = dotsWrap.children;
+  function step() {
+    const first = track.firstElementChild;
+    const slideWidth = first.getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(track).gap) || 0;
+    index++;
+    track.style.transition = "transform 0.7s cubic-bezier(0.65,0,0.35,1)";
+    track.style.transform = "translateX(-" + index * (slideWidth + gap) + "px)";
 
-  function goTo(i) {
-    index = (i + count) % count;
-    track.style.transform = "translateX(-" + index * 100 + "%)";
-    Array.from(dots).forEach((d, di) => d.classList.toggle("active", di === index));
+    if (index >= count) {
+      // after the animated step reaches the cloned tail, snap back to the real start with no transition
+      setTimeout(() => {
+        index = 0;
+        track.style.transition = "none";
+        track.style.transform = "translateX(0px)";
+      }, 720);
+    }
   }
+
+  // clone the first few slides (matching max visible count) and append them, so the
+  // wrap-around always has real content to slide into and the snap-back is invisible
+  slides.slice(0, 4).forEach((s) => track.appendChild(s.cloneNode(true)));
 
   function start() {
-    timer = setInterval(() => goTo(index + 1), 3500);
+    timer = setInterval(step, 2600);
   }
   function stop() {
     clearInterval(timer);

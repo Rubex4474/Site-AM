@@ -1,5 +1,17 @@
 gsap.ticker.lagSmoothing(0);
 
+// ===== Keep hero exactly filling the first fold (viewport minus ticker+header) =====
+(function () {
+  const ticker = document.querySelector(".ticker-wrap");
+  const header = document.querySelector(".site-header");
+  function setChromeHeight() {
+    const h = (ticker ? ticker.offsetHeight : 0) + (header ? header.offsetHeight : 0);
+    document.documentElement.style.setProperty("--chrome-h", h + "px");
+  }
+  setChromeHeight();
+  window.addEventListener("resize", setChromeHeight);
+})();
+
 // ===== Hero entrance (staggered) =====
 gsap.set(".hero-sub, .hero-note, .eyebrow, .cta-btn--lg", { y: 20 });
 

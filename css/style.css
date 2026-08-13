@@ -140,8 +140,8 @@ a { text-decoration: none; color: inherit; }
 /* ===== Hero (first fold) ===== */
 .hero {
   position: relative;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: calc(100vh - var(--chrome-h, 0px));
+  min-height: calc(100dvh - var(--chrome-h, 0px));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -351,6 +351,7 @@ a { text-decoration: none; color: inherit; }
     background-position: 50% 20%;
     filter: grayscale(0.55) sepia(0.35) brightness(0.42) contrast(1.12) saturate(1.15);
   }
+  .hero { justify-content: flex-start; padding-top: 2.25rem; }
 }
 
 @media (max-height: 700px) {

@@ -1,5 +1,12 @@
 gsap.ticker.lagSmoothing(0);
 
+// ===== Meta Pixel Lead event on WhatsApp CTA clicks =====
+document.querySelectorAll(".js-lead-cta").forEach((el) => {
+  el.addEventListener("click", () => {
+    if (typeof fbq === "function") fbq("track", "Lead");
+  });
+});
+
 // ===== Keep hero exactly filling the first fold (viewport minus ticker+header) =====
 (function () {
   const ticker = document.querySelector(".ticker-wrap");
